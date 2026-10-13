@@ -1,0 +1,23 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  cpu-interpreter-tests:
+    runs-on: ubuntu-latest
+    env:
+      TRITON_INTERPRET: "1"  # run Triton kernels on CPU; no GPU in CI
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install triton numpy pytest
+      - name: Run tests
+        run: pytest -q tests
